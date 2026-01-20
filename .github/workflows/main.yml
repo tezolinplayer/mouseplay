@@ -3,9 +3,7 @@ name: Build Windows x86
 on:
   push:
     branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
-  workflow_dispatch: # Permite rodar manualmente
+  workflow_dispatch:
 
 jobs:
   build:
@@ -22,8 +20,13 @@ jobs:
     - name: Build Project
       run: cargo build --release --target i686-pc-windows-msvc
 
+    # Este passo vai listar os arquivos para você ver o nome real do .exe
+    - name: List files in output directory
+      run: dir target\i686-pc-windows-msvc\release\
+
     - name: Upload Executable
       uses: actions/upload-artifact@v4
       with:
         name: mouseplay-windows-x86
-        path: target/i686-pc-windows-msvc/release/mouseplay.exe
+        # Usando um padrão curinga (*.exe) para pegar qualquer executável que foi gerado
+        path: target/i686-pc-windows-msvc/release/*.exe

@@ -17,16 +17,15 @@ jobs:
         rustup toolchain install stable-i686-pc-windows-msvc
         rustup default stable-i686-pc-windows-msvc
 
-    - name: Build All Packages
-      # O comando --workspace garante que tanto o 'loader' quanto o 'mouseplay' sejam compilados
+    - name: Build Project
+      # O comando --workspace garante que o loader e a lógica do mouseplay sejam compilados
       run: cargo build --release --target i686-pc-windows-msvc --workspace
-
-    - name: List files (Para conferir os nomes)
-      run: dir target\i686-pc-windows-msvc\release\
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: mouseplay-full-package
-        # Isso vai pegar o loader.exe, o mouseplay.exe e qualquer outro binário
-        path: target/i686-pc-windows-msvc/release/*.exe
+        # Pegamos o .exe e o .dll (caso a lógica de hooks esteja em uma library)
+        path: |
+          target/i686-pc-windows-msvc/release/*.exe
+          target/i686-pc-windows-msvc/release/*.dll

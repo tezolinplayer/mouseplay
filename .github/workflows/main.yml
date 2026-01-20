@@ -12,20 +12,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Rust (i686 target)
-      run: |
-        rustup toolchain install stable-i686-pc-windows-msvc
-        rustup default stable-i686-pc-windows-msvc
+    - name: Install Rust Target
+      # Seguindo a instrução oficial do README para adicionar o suporte a 32 bits
+      run: rustup target add i686-pc-windows-msvc
 
     - name: Build Project
-      # O comando --workspace garante que o loader e a lógica do mouseplay sejam compilados
+      # O --workspace garante que o projeto real 'mouseplay' seja compilado junto com o loader
       run: cargo build --release --target i686-pc-windows-msvc --workspace
 
-    - name: Upload Artifacts
+    - name: Upload Full Package
       uses: actions/upload-artifact@v4
       with:
         name: mouseplay-full-package
-        # Pegamos o .exe e o .dll (caso a lógica de hooks esteja em uma library)
+        # Pegamos todos os executáveis (.exe) e bibliotecas (.dll) gerados
         path: |
           target/i686-pc-windows-msvc/release/*.exe
           target/i686-pc-windows-msvc/release/*.dll

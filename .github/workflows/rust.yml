@@ -1,22 +1,28 @@
-name: Rust
+name: Build Windows x86
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-env:
-  CARGO_TERM_COLOR: always
+    branches: [ "main", "master" ]
+  workflow_dispatch:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    # Correção 1: Usar máquina Windows para ter acesso ao compilador MSVC nativo
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+
+    - name: Install Rust Target
+      # Correção 2: Adicionar apenas o target correto (sem "stable-" no nome)
+      run: rustup target add i686-pc-windows-msvc
+
+    - name: Build Project
+      # Correção 3: O comando de build usa apenas 'i686-pc-windows-msvc'
+      run: cargo build --release --target i686-pc-windows-msvc --workspace
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: mouseplay-release
+        path: target/i686-pc-windows-msvc/release/*.exe

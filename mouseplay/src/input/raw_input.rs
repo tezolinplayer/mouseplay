@@ -173,7 +173,8 @@ impl RawInput {
             }
             WM_PARENTNOTIFY if w_param == 513 => {
                 if self.capture.is_some() && !self.mouse_lock {
-                    let mut rect = RECT::default();
+                    // CORREÇÃO AQUI: RECT manual
+                    let mut rect = RECT { left: 0, top: 0, right: 0, bottom: 0 };
                     // TODO: check return value for error
                     unsafe { GetWindowRect(h_wnd, &mut rect as _) };
                     let y = GET_Y_LPARAM(l_param);
@@ -327,7 +328,8 @@ impl RawInput {
     }
 
     fn center_mouse(&self, h_wnd: HWND) {
-        let mut rect = RECT::default();
+        // CORREÇÃO AQUI: RECT manual
+        let mut rect = RECT { left: 0, top: 0, right: 0, bottom: 0 };
         // TODO: check return value for error
         unsafe {
             GetWindowRect(h_wnd, &mut rect as _);

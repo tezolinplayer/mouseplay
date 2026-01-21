@@ -3,16 +3,33 @@ name = "mouseplay"
 version = "0.1.0"
 edition = "2018"
 
-# --- ADICIONE ESTA PARTE ---
 [lib]
 path = "src/lib.rs"
 crate-type = ["rlib", "cdylib"]
-# ---------------------------
 
 [dependencies]
-windows = "0.48"
+# Bibliotecas utilitárias usadas no código
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 log = "0.4"
 simple_logger = "1.16"
-# (Mantenha as outras dependências que já estiverem lá)
+lazy_static = "1.4"
+paste = "1.0"
+libc = "0.2"
+itoa = "1.0"
+
+# Configuração essencial do WINAPI (o código usa a versão 0.3, não a nova windows-rs)
+[dependencies.winapi]
+version = "0.3"
+features = [
+    "winuser",      # Necessário para Mouse, Teclado e Janelas (FindWindowA, etc)
+    "winbase",      # Necessário para funções básicas do sistema
+    "consoleapi",   # Necessário para o console.rs (AllocConsole)
+    "processenv",   # Necessário para variáveis de ambiente
+    "libloaderapi", # Necessário para carregar módulos
+    "sysinfoapi",
+    "errhandlingapi",
+    "minwindef",
+    "minwinbase",
+    "std"
+]
